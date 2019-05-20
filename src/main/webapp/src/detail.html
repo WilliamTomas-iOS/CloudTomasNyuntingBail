@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="styles.css" rel="stylesheet"  type="text/css"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<title>TinyPet</title>
+</head>
+<body>
+	<script src="https://unpkg.com/mithril/mithril.js"></script>
+	<script>
+		function getUrlVars() {
+		    var vars = {};
+		    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+		        vars[key] = value;
+		    });
+		    return vars;
+		}
+		function signer() {
+			console.log("signature en cours")
+			console.log("https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/signature/"+getUrlVars()["id"]+"/"+getUrlVars()["user"])
+	        return m.request({
+	            method: "POST",
+	            url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/signature/"+getUrlVars()["id"]+"/"+getUrlVars()["user"]
+	        })
+	        .then(function(result) {
+	        	console.log("signé:",result)
+	        	
+	        })
+		}
+		var Hello = {
+			    view: function() {
+			    	return m("main", [
+			            m("h1", {class: "title"}, "My second app  mithril detail"),
+			            m("div", {id: "box"}, m(DetailView)),
+			            m("div", {id: "liens"}, m(Links)),
+			        ])
+			    }
+		}
+		var Detail = {
+			list: [],
+			   loadList: function() {
+				   var parametre = getUrlVars()["id"]
+				   console.log("got:",parametre)
+				   var user = getUrlVars()["user"]
+				   console.log("user:", user)
+			       return m.request({
+			           method: "GET",
+			           url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/detailPet/"+parametre
+			       })
+			       .then(function(result) {
+			           Detail.list = result.items
+			       	console.log("got:",result.items)
+			       	m.redraw(true) // force
+			       })
+			 	}
+		}
+		var DetailView = {
+				oninit: Detail.loadList,
+			    view: function() {
+			        return m(".detail-list", Detail.list.map(function(item) {
+			            return m(".detail-list-item", [
+			                m("h1", item.properties.titre),
+			                m("h6", "Proposé par : " + item.properties.owner),
+			                m("br"),
+			                m("h4", item.properties.nbSignataires + " signataires"),
+			                m("p", item.properties.contenu),
+			                m("button", {class: "btn btn-primary my-2 my-sm-0", onclick: signer},"Signer la pétition"),
+			            ])
+	
+			        }))
+			    },
+				
+		}
+		
+	    var Links ={
+	    		 view: function() {
+	 	 	    	return m("main", [
+
+						m("li",[m("a", {href:"../index.html"}, "Accueil"),]),
+	                    m("li",[m("a", {href:"../seeTopPet.html"}, "Top Pétitions"),]),
+	 	 	        ])
+	 	 	    }
+	    }
+		
+		m.mount(document.body, Hello)	
+	</script>
+</body>
+</html>
