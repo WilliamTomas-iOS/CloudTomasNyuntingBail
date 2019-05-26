@@ -18,10 +18,10 @@
 		}
 		function signer() {
 			console.log("signature en cours")
-			console.log("https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/signature/"+getUrlVars()["id"]+"/"+getUrlVars()["user"])
+			console.log("https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/signer?"+getUrlVars()["id"]+"/"+getUrlVars()["user"])
 	        return m.request({
 	            method: "POST",
-	            url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/signature/"+getUrlVars()["id"]+"/"+getUrlVars()["user"]
+	            url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/signer?petition="+getUrlVars()["id"]+"&signataire="+getUrlVars()["user"]
 	        })
 	        .then(function(result) {
 	        	console.log("signé:",result)

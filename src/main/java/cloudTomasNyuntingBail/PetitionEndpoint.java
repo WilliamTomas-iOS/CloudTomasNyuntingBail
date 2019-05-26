@@ -74,9 +74,9 @@ public class PetitionEndpoint {
 	}
 	
 	@ApiMethod(name = "detailPetKey", httpMethod = HttpMethod.GET)
-	public Entity detailPetKey(@Named("key") Key key) {
+	public Entity detailPetKey(@Named("id") String key) {
 		Filter propertyFilter =
-			    new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, key);
+			    new FilterPredicate("id", FilterOperator.EQUAL, key);
 		Query q = new Query("Petition").setFilter(propertyFilter);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		PreparedQuery prepQuery = datastore.prepare(q);
@@ -84,13 +84,29 @@ public class PetitionEndpoint {
 		return result;
 	}
 	
-	@ApiMethod(name="signerPet", httpMethod = HttpMethod.GET)
+	@ApiMethod(name = "updateNbSignataires", httpMethod = HttpMethod.PUT, path="/updateSinataires")
+	public void updateNbSignataires(@Named("petition") String id) {
+		Filter propertyFilter =
+			    new FilterPredicate("id", FilterOperator.EQUAL, id);
+		Query q = new Query("Petition").setFilter(propertyFilter);
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery prepQuery = datastore.prepare(q);
+		Entity result = prepQuery.asSingleEntity();
+		Long nb = (Long) result.getProperty("nbSignataires");
+		result.setProperty("nbSignataires", nb+1);
+		DatastoreService datastore1 = DatastoreServiceFactory.getDatastoreService();
+		datastore1.put(result);
+		//return result;
+	}
+	
+	@ApiMethod(name="signerPet", httpMethod = HttpMethod.POST, path="/signer")
 	public Entity signature(@Named("petition") String petition, @Named("signataire") String signataire) {
 		Entity e = new Entity("Signataires");
 		e.setProperty("petition", petition);
 		e.setProperty("signataire", signataire);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		datastore.put(e);
+		updateNbSignataires(petition);
 		return e;
 	}
 	
@@ -105,15 +121,15 @@ public class PetitionEndpoint {
 	
 	@ApiMethod(name="listerMesPets", path = "/mespets")
 	public List<Entity> listerMesPets(@Named("id") String id) {
-		List<Entity> resultat = null;
+		List<Entity> resultat = new ArrayList<Entity>();
 		Filter propertyFilter =
-			    new FilterPredicate("id", FilterOperator.EQUAL, id);
+			    new FilterPredicate("signataire", FilterOperator.EQUAL, id);
 		Query q = new Query("Signataires").setFilter(propertyFilter);
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		PreparedQuery prepQuery = datastore.prepare(q);
 		List<Entity> results = prepQuery.asList(FetchOptions.Builder.withDefaults());
-		for (Entity result : results) {
-			resultat.add(detailPetKey(result.getKey())); 
+		for (Entity result : results) { 
+			resultat.add(detailPetKey((String) result.getProperty("petition"))); 
 		}
 		return resultat;
 	}

@@ -31,14 +31,14 @@ var Hello = {
 			    loadList: function() {
 			    	var user = getUrlVars()["id"]
 			    	console.log(user)
-			    	console.log("https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/mespets?id="+user)
+			    	console.log("https://cloudtomasnyuntingbail.appspot.com/_ah/api/mespets?id="+user)
 			        return m.request({
 			            method: "GET",
-			            url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/cloud/v1/mespets?id="+user
+			            url: "https://cloudtomasnyuntingbail.appspot.com/_ah/api/mespets?id="+user
 			        })
 			        .then(function(result) {
 			            
-			        	console.log("got:",Score.items)
+			        	console.log("got:",result.items)
 			        	Score.list = result.items
 			        	m.redraw(true) // force
 			        })
