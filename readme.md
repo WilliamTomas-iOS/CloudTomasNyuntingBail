@@ -19,11 +19,9 @@ Plusieurs difficultés sur le projet :
 
 Mise en place du compteur du nombre de voix par pétitions, nous n'avons pas réussi à implémenter une fonction de mise à jour dans l'API.
 
-Mise en place de la liste des pétitions que j'ai signé, car l'API ne parvient pas à trier sur l'élément d'identification que nous lui passons (une adresse mail, le @ fait planter la requête). Pourtant quand on regarde dans l'API la fonction listAllSignatures, on voit bien les pétitions signées.
+Mise en place d'une liste de pétitions signés par des utilisateurs authentifiés via google sign in (méthode intégré avec google cloud app engine) et le nombre de signataires affichés. Mais nous ne pouvons pas mettre en place un système de vérification de doubles signatures car nous ne pouvons pas garder les adresses des signataires (car le "@" de l'adresse gène les requètes) et le système d'identification que nous utilisons (id_token) peut changer pour un même utilisateur.
 
-Nous n'avons pas réussi à mettre en place la vérification d'une double signature, pour les mêmes problèmes qu'évoqués au dessus.
-
-Design global de l'application pauvre, dû à une mauvaise prise en main de framework mithril.js.
+Design gloval de l'application pauvre, car l'implémentation d'un framework bootstrap alourdira l'application (et donc perd tout intérêt d'utiliser mithril qui est un framework léger)
 
 Tous ces problèmes sont connus et cernés, leur correction n'a pas été possible par manque de temps.
 
